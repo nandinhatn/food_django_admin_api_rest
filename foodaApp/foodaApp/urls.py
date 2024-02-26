@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from meususuarios.views import UserList
 from produtos.views import ProductList
+from pedidos.views import NovoPedido
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,4 +25,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', UserList.as_view(), name='user-list'),
     path('produtos/', ProductList.as_view(), name='product-list'),
+    path('novo_pedido/', NovoPedido.as_view(), name='novo_pedido')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

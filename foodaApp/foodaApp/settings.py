@@ -48,6 +48,7 @@ INSTALLED_APPS = [
      'categorias',
      'restaurante',
      'faixas',
+     'pedidos',
 ]
 
 MIDDLEWARE = [
