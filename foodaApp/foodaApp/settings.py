@@ -20,6 +20,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -36,12 +37,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'flat_responsive',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     'meususuarios',
      'rest_framework',
      'produtos',
@@ -51,6 +56,11 @@ INSTALLED_APPS = [
      'pedidos',
 ]
 
+ADMIN_INTERFACE_SETTINGS = {
+    'theme': 'gerenciador',      # Escolha o tema desejado
+    'title': 'My Admin Panel', # Título personalizado para o painel de administração
+   
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

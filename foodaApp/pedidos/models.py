@@ -17,12 +17,12 @@ class Pedidos (models.Model):
     PAG_ENTREGA = 'ENT'
 
 
-    STATUS_PAGAMENTO_CHOICE =[(PROCESSANDO, 'Processando'), (APROVADO, 'Pagamento Aprovado'), (RECUSADO, 'Pagamento recusado')]
+    STATUS_PAGAMENTO_CHOICE =[(PROCESSANDO, 'Processando'), (APROVADO, 'Pagamento Aprovado'), (RECUSADO, 'Pagamento Recusado')]
 
     TIPO_PAGAMENTO_CHOICE =[(PIX, 'Pix'), (CARTAO,'Cartão'), (PAG_ENTREGA, 'Pagamento na Entrega')]
     
 
-    STATUS__PEDIDO_CHOICE = [ (RECEBIDO, 'Recebido'), (PRODUCAO, 'Em Produção'), (SAIDA_ENTREGA, ' Saiu para entrega'), (ENTREGUE, 'ENTREGUE')]
+    STATUS__PEDIDO_CHOICE = [ (RECEBIDO, 'Recebido'), (PRODUCAO, 'Em Produção'), (SAIDA_ENTREGA, ' Saiu para entrega'), (ENTREGUE, 'Entrega Realizada')]
     name_client = models.CharField(max_length=20)
     data_pedido= models.DateField(auto_now_add=True)
     observacoes= models.TextField(blank=True)
@@ -33,8 +33,31 @@ class Pedidos (models.Model):
                                      default=RECEBIDO)
     status_pagamento= models.CharField(max_length=2, choices=STATUS_PAGAMENTO_CHOICE, default=PROCESSANDO)
     forma_pagamento = models.CharField(max_length=4, choices = TIPO_PAGAMENTO_CHOICE, default=PAG_ENTREGA )
+
+
+
+    def calcular_total(self):
+       total = 0
+       itens_pedidos = self.itempedido_set.all()
+       for item in itens_pedidos:
+           total += item.produto.preco * item.quantidade
+           print(total)
+       return total
+   
+    
     
 class ItemPedido(models.Model):
     pedido = models.ForeignKey(Pedidos, on_delete=models.CASCADE)
     produto = models.ForeignKey(Product, on_delete= models.CASCADE)
     quantidade = models.PositiveBigIntegerField(default=1)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def save(self, *args, **kwargs):
+        self.total = {self.produto.preco * self.quantidade}
+        print(self.produto.preco)
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f'{self.produto.preco * self.quantidade}'
+
+   
