@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 import pymysql
+import logging
+logger = logging.getLogger(__name__)
+from django.utils.translation import gettext_lazy as _
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,22 +34,66 @@ SECRET_KEY = 'django-insecure-s5wj&sugddn80$9!2bbjup+rl&zu7v(m+%!&m16s5=e-q)^)%5
 DEBUG = True
 MEDIA_URL = '/imagens/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+# CORS_ALLOWED_ORIGINS = [
+#     "*",  # Origem do seu aplicativo React
+    
+# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
 
 
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+USE_I18N = True
+LANGUAGES = (
+  ('pt-br', _('Brazilian Portuguese')),
+    ('en', _('English')),
+)
+
+ROOT_DIR = Path.cwd()
+APPS_DIR = ROOT_DIR / "apps"
+USE_L10N = True
 # Application definition
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost:3000',
+)
 
 INSTALLED_APPS = [
+
     'admin_interface',
+    'corsheaders',
     'flat_responsive',
+    'translation_manager',
     'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    
+    'django.contrib.staticfiles',    
     'meususuarios',
      'rest_framework',
      'produtos',
@@ -61,14 +108,18 @@ ADMIN_INTERFACE_SETTINGS = {
     'title': 'My Admin Panel', # Título personalizado para o painel de administração
    
 }
+
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+     "django.middleware.security.SecurityMiddleware", 
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'foodaApp.urls'

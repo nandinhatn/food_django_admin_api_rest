@@ -1,5 +1,7 @@
 from django.db import models
 from produtos.models import Product
+from faixas.models import Faixas
+
 
 # Create your models here.
 class Pedidos (models.Model):
@@ -23,16 +25,19 @@ class Pedidos (models.Model):
     
 
     STATUS__PEDIDO_CHOICE = [ (RECEBIDO, 'Recebido'), (PRODUCAO, 'Em Produção'), (SAIDA_ENTREGA, ' Saiu para entrega'), (ENTREGUE, 'Entrega Realizada')]
-    name_client = models.CharField(max_length=20)
+    name_client = models.CharField(max_length=20, verbose_name="Nome do Cliente")
     data_pedido= models.DateField(auto_now_add=True)
-    observacoes= models.TextField(blank=True)
-    address_client= models.TextField()
-    cpf_client= models.CharField(max_length=11)
+    observacoes= models.TextField(blank=True, verbose_name= "Observações")
+    email_client = models.EmailField(blank=True, default="email@email.com.br", verbose_name= "Email do Cliente")
+    address_client= models.TextField(verbose_name="Endereço do Cliente")
+    cpf_client= models.CharField(max_length=11, verbose_name='CPF')
     status_pedido = models.CharField(max_length=2,
                                      choices= STATUS__PEDIDO_CHOICE,
                                      default=RECEBIDO)
     status_pagamento= models.CharField(max_length=2, choices=STATUS_PAGAMENTO_CHOICE, default=PROCESSANDO)
     forma_pagamento = models.CharField(max_length=4, choices = TIPO_PAGAMENTO_CHOICE, default=PAG_ENTREGA )
+
+    faixa = models.ForeignKey(Faixas, on_delete=models.CASCADE, default=None, null=True, verbose_name="Frete Faixa")  # Adicionando chave estrangeira para a classe Faixas
 
 
 
@@ -43,7 +48,9 @@ class Pedidos (models.Model):
            total += item.produto.preco * item.quantidade
            print(total)
        return total
-   
+    
+    def __str__(self):
+         return f'{self.name_client}'
     
     
 class ItemPedido(models.Model):
@@ -51,13 +58,32 @@ class ItemPedido(models.Model):
     produto = models.ForeignKey(Product, on_delete= models.CASCADE)
     quantidade = models.PositiveBigIntegerField(default=1)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    
+   
 
     def save(self, *args, **kwargs):
-        self.total = {self.produto.preco * self.quantidade}
-        print(self.produto.preco)
+
+        total_produto = self.produto.preco * self.quantidade
+        # if self.faixa:
+        #     total_faixa = self.faixa.value
+        #     self.total = total_produto 
+        
+        # else: 
+        self.total = total_produto
+        
+       
+     
+        
+
+      
         super().save(*args, **kwargs)
     
+    class Meta():
+        verbose_name_plural  = 'Pedido'
+        verbose_name='Pedido'
     def __str__(self):
-        return f'{self.produto.preco * self.quantidade}'
+        return f'{self.produto.name}'
 
-   
+
+ 
