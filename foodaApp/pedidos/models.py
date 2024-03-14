@@ -14,14 +14,14 @@ class Pedidos (models.Model):
     APROVADO = 'AP'
     RECUSADO = 'RE'
 
-    PIX = 'PIX'
-    CARTAO = 'CARD'
+    PIX = 'pix'
+    CARTAO = 'credit_card'
     PAG_ENTREGA = 'ENT'
 
 
     STATUS_PAGAMENTO_CHOICE =[(PROCESSANDO, 'Processando'), (APROVADO, 'Pagamento Aprovado'), (RECUSADO, 'Pagamento Recusado')]
 
-    TIPO_PAGAMENTO_CHOICE =[(PIX, 'Pix'), (CARTAO,'Cartão'), (PAG_ENTREGA, 'Pagamento na Entrega')]
+    TIPO_PAGAMENTO_CHOICE =[(PIX, 'PIX'), (CARTAO,'Cartão'), (PAG_ENTREGA, 'Pagamento na Entrega')]
     
 
     STATUS__PEDIDO_CHOICE = [ (RECEBIDO, 'Recebido'), (PRODUCAO, 'Em Produção'), (SAIDA_ENTREGA, ' Saiu para entrega'), (ENTREGUE, 'Entrega Realizada')]
@@ -35,7 +35,7 @@ class Pedidos (models.Model):
                                      choices= STATUS__PEDIDO_CHOICE,
                                      default=RECEBIDO)
     status_pagamento= models.CharField(max_length=2, choices=STATUS_PAGAMENTO_CHOICE, default=PROCESSANDO)
-    forma_pagamento = models.CharField(max_length=4, choices = TIPO_PAGAMENTO_CHOICE, default=PAG_ENTREGA )
+    forma_pagamento = models.CharField(max_length=15, choices = TIPO_PAGAMENTO_CHOICE, default=PAG_ENTREGA )
 
     faixa = models.ForeignKey(Faixas, on_delete=models.CASCADE, default=None, null=True, verbose_name="Frete Faixa")  # Adicionando chave estrangeira para a classe Faixas
 

@@ -5,6 +5,8 @@ from .serializers import PedidoSeralizer
 from .models import Pedidos, ItemPedido
 from produtos.models import Product
 from faixas.models import Faixas
+
+
 import requests
 
 import mercadopago
@@ -18,7 +20,10 @@ class NovoPedido(APIView):
             # Processa os itens do pedido
             produtos = request.data.get('produtos', [])  # Lista de produtos pedidos
             faixa_id  = request.data.get('faixa')
+            forma_pagamento = request.data.get('forma_pagamento') 
             faixa = Faixas.objects.get(id=faixa_id)
+            email_client = request.data.get('email_client')
+          
             for produto_info in produtos:
                 produto_id = produto_info.get('id')
                 quantidade = produto_info.get('quantidade')
@@ -29,15 +34,17 @@ class NovoPedido(APIView):
                     quantidade=quantidade,
                     
                 )
+          
+            total_pedido= pedido.calcular_total()
             payment_data = {
-    "transaction_amount": 100,
+    "transaction_amount": float(total_pedido),
     "token": 'ff8080814c11e237014c1ff593b57b4d',
     
     "payer": {
         
-        "email": "contato@teste.com",
+        "email": email_client,
     },
-     "payment_method_id": "pix",
+     "payment_method_id": forma_pagamento,
 }
 
           

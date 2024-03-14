@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 
 # Create your views here.
 from django.shortcuts import render
@@ -10,7 +10,7 @@ from .serializers import CustomProductSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import CustomProductSerializer
+
 
 # class UserList(generics.ListAPIView):
 #     queryset = CustomUser.objects.all()
